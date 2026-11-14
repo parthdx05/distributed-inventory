@@ -167,7 +167,7 @@ The service listens on port `50051` by default.
 
 ### 2. Start the inventory nodes
 
-Option A: command line, one node per terminal:
+#### Option A: command line, one node per terminal:
 
 ```sh
 python -m distributed_inventory.server --port 50052
@@ -184,13 +184,11 @@ python -m distributed_inventory.server --host 192.168.1.20 --port 50052 \
     --peers 192.168.1.21:50052 192.168.1.22:50052 --llm 192.168.1.30:50051
 ```
 
-Option B: Streamlit (see below), which can start several nodes in one app.
+#### Option B: Streamlit app:
 
 Allow a few seconds after startup for the cluster to elect a leader. State
 files, if created, are written to the current directory as
 `raft_state_<host>_<port>.json`. Use `--state-dir` to change the location.
-
-### 3. Streamlit app
 
 ```sh
 streamlit run app.py
@@ -210,8 +208,12 @@ Choose a mode at the top of the page:
 Nodes started from the app keep running until they are stopped or the
 Streamlit process exits.
 
-### 4. Client walkthrough (command line)
+### 3. Client walkthrough (command line)
 
+For Streamlit:
+Use the Client Mode in the Streamlit app. See [the above section](#option-b-streamlit-app)
+
+For command line:
 ```sh
 python -m distributed_inventory.client
 python -m distributed_inventory.client --nodes localhost:50052 localhost:50053 localhost:50054
@@ -220,7 +222,7 @@ python -m distributed_inventory.client --nodes localhost:50052 localhost:50053 l
 The client tries the nodes in order until one accepts the order as leader. It
 then reads inventory, asks for all three AI insights, and logs out.
 
-### 5. Stress script (optional)
+### 4. Stress script (optional)
 
 ```sh
 python -m distributed_inventory.client.stress_test --node localhost:50052
