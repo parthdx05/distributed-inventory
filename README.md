@@ -47,10 +47,10 @@ Each node starts with the same sample inventory:
  +-----------------------------------------------------+
  |             Three-node Raft cluster                 |
  |                                                     |
- |   +------------+  +------------+  +------------+   |
- |   | node       |  | node       |  | node       |   |
- |   | :50052     |  | :50053     |  | :50054     |   |
- |   +------------+  +------------+  +------------+   |
+ |   +------------+  +------------+  +------------+    |
+ |   | node       |  | node       |  | node       |    |
+ |   | :50052     |  | :50053     |  | :50054     |    |
+ |   +------------+  +------------+  +------------+    |
  |   Each node exchanges Raft RPCs with its peers.     |
  +---------------------------+-------------------------+
                              |
@@ -130,9 +130,18 @@ Python 3.10 or newer is required. The generated bindings need
 
 From the repository root:
 
+**Bash:**
 ```sh
 python -m venv .venv
-source .venv/bin/activate          # Windows PowerShell: .venv\Scripts\Activate.ps1
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+**Windows Powershell:**
+```PowerShell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
@@ -140,16 +149,6 @@ python -m pip install -r requirements.txt
 `requirements.txt` includes `transformers` and `torch` for the LLM service,
 which is a large install. If you only need the cluster and the client, install
 `grpcio`, `protobuf` and `streamlit` instead.
-
-Alternatively, install the package in editable mode with optional groups:
-
-```sh
-python -m pip install -e ".[llm,app]"
-```
-
-The LLM service downloads `TinyLlama/TinyLlama-1.1B-Chat-v1.0` from Hugging
-Face the first time it starts, which needs internet access unless the model is
-already cached.
 
 ## Run
 
@@ -161,6 +160,10 @@ terminal. Start the LLM service first, then the nodes, then a client.
 ```sh
 python -m distributed_inventory.llm --port 50051
 ```
+> [!TIP]
+> The LLM service downloads `TinyLlama/TinyLlama-1.1B-Chat-v1.0` from Hugging
+Face the first time it starts, which needs internet access unless the model is
+already cached.
 
 Options: `--model` selects a different Hugging Face text-generation model.
 The service listens on port `50051` by default.
@@ -174,21 +177,16 @@ python -m distributed_inventory.server --port 50052
 python -m distributed_inventory.server --port 50053
 python -m distributed_inventory.server --port 50054
 ```
-
-Each node's peers default to the three localhost nodes. For nodes on other
+> [!NOTE]
+> Each node's peers default to the three localhost nodes. For nodes on other
 machines, pass `--host` with an address peers can reach, and `--peers` with
-the full list of peer `host:port` addresses:
-
-```sh
-python -m distributed_inventory.server --host 192.168.1.20 --port 50052 \
-    --peers 192.168.1.21:50052 192.168.1.22:50052 --llm 192.168.1.30:50051
-```
+the full list of peer `host:port` addresses. e.g.
+> ```sh
+> python -m distributed_inventory.server --host 192.168.1.20 --port 50052 \
+>     --peers 192.168.1.21:50052 192.168.1.22:50052 --llm 192.168.1.30:50051
+> ```
 
 #### Option B: Streamlit app:
-
-Allow a few seconds after startup for the cluster to elect a leader. State
-files, if created, are written to the current directory as
-`raft_state_<host>_<port>.json`. Use `--state-dir` to change the location.
 
 ```sh
 streamlit run app.py
@@ -205,15 +203,18 @@ Choose a mode at the top of the page:
   rows), enter credentials, an item and a quantity, then run the walkthrough.
   Each step is shown as it happens.
 
-Nodes started from the app keep running until they are stopped or the
+> [!NOTE]
+> - Allow a few seconds after startup for the cluster to elect a leader. State
+files, if created, are written to the current directory as
+`raft_state_<host>_<port>.json`. Use `--state-dir` to change the location.
+> - Nodes started from the app keep running until they are stopped or the
 Streamlit process exits.
 
-### 3. Client walkthrough (command line)
+### 3. Client walkthrough
 
-For Streamlit:
-Use the Client Mode in the Streamlit app. See [the above section](#option-b-streamlit-app)
+**For Streamlit:** Use the Client Mode in the Streamlit app. See [the above section](#option-b-streamlit-app)
 
-For command line:
+**For command line:**
 ```sh
 python -m distributed_inventory.client
 python -m distributed_inventory.client --nodes localhost:50052 localhost:50053 localhost:50054
@@ -283,8 +284,11 @@ The client-facing `post` operation currently recognizes the type `order`.
 
 ## Regenerating protobuf bindings
 
-The generated files are checked in, so regeneration is not needed to run the
-project. If you edit `distributed_inventory/proto/system.proto`, install
+> [!WARNING]
+> The generated files are checked in, so regeneration is not needed to run the
+project.
+
+If you edit `distributed_inventory/proto/system.proto`, install
 `grpcio-tools` in the active environment, then run from the `proto` directory:
 
 ```sh
