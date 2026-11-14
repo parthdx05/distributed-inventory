@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "distributed-inventory"
+version = "0.2.0"
+description = "Raft-replicated inventory prototype with a gRPC LLM insight service"
+requires-python = ">=3.10"
+dependencies = [
+    "grpcio>=1.84.0",
+    "protobuf>=7.35.1",
+]
+
+[project.optional-dependencies]
+# LLM service
+llm = ["transformers", "torch"]
+# Streamlit front end (app.py)
+app = ["streamlit>=1.37"]
+# Only needed to regenerate proto bindings
+dev = ["grpcio-tools"]
+
+[tool.setuptools.packages.find]
+include = ["distributed_inventory*"]

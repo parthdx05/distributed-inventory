@@ -1,5 +1,6 @@
-grpcio-tools
-grpcio
-protobuf
+grpcio>=1.84.0
+protobuf>=7.35.1
+streamlit>=1.37
 transformers
 torch
+grpcio-tools
