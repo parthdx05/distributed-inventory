@@ -1,4 +1,4 @@
-# Distributed Inventory
+# [Distributed Inventory](https://github.com/parthdx05/distributed-inventory)
 
 Advanced Operating Systems project under Dr. Asish Bera, Birla Institute of
 Technology & Science, Pilani-Pilani Campus.
@@ -18,6 +18,8 @@ The project is intended to demonstrate service boundaries, gRPC communication,
 leader-based writes, log replication, and an AI-backed read path. It is not a
 production inventory or consensus system; see [Current behavior and
 limitations](#current-behavior-and-limitations).
+
+Repository link: [](https://github.com/parthdx05/distributed-inventory)
 
 ## What it does
 
